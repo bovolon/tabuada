@@ -202,6 +202,43 @@ body.fire .q{text-shadow:0 0 22px rgba(255,140,40,.55)}
 #a2hs{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:70;max-width:456px;margin:0 auto;padding:12px 44px 12px 14px;font-size:16px;font-weight:600;line-height:1.3;background:var(--card);color:var(--ink);border:3px solid var(--edge);border-radius:18px;box-shadow:0 5px 0 var(--edge)}
 #a2hs b{font-weight:700}
 #a2hs button{position:absolute;top:6px;right:6px;width:32px;height:32px;border:none;background:none;font-size:22px;line-height:1;padding:0}
+
+/* ---------- race ---------- */
+.seg.four{display:grid;grid-template-columns:1fr 1fr}
+.seg.four button{font-size:18px;padding:10px 4px}
+.racenote{width:100%;padding:12px 14px;font-size:18px;font-weight:600;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;background:var(--soft)}
+.go.race{background:var(--ink)!important;color:var(--bg)}
+.mini{padding:14px 12px 10px;margin-bottom:16px}
+.mini h3{margin:0 0 8px;font-size:18px;display:flex;justify-content:space-between;align-items:baseline}
+.mini h3 small{font-size:14px;color:var(--muted);font-weight:600}
+.rows{display:grid;grid-template-columns:34px 1fr auto;gap:6px 8px;align-items:center;font-size:17px;font-weight:600}
+.rows .t{font-variant-numeric:tabular-nums;font-weight:700}
+.rows .d{grid-column:2/4;margin-top:-6px;font-size:12px;color:var(--muted);font-weight:500}
+.rows .me{color:var(--bad)}
+.empty{color:var(--muted);text-align:center;font-weight:500;padding:6px 0 4px}
+.clock{text-align:center;font-weight:700;font-size:34px;line-height:1;margin:8px 0 0;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.clock.off{opacity:.25}
+.lvl .rf{background:var(--good);position:absolute;top:0;bottom:0;left:0;width:0;transition:width .12s ease-out}
+.opt.racewrong{background:var(--bad);color:#fff;animation:shake .25s}
+.opt.raceright{background:var(--good);color:#fff}
+.cd{position:fixed;inset:0;z-index:65;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;background:color-mix(in srgb,var(--bg) 82%,transparent);pointer-events:none}
+.lamps{display:flex;gap:16px}
+.lamp{width:58px;height:58px;border-radius:50%;border:4px solid var(--edge);background:#3a3d55;box-shadow:inset 0 -6px 0 rgba(0,0,0,.25)}
+.lamp.red{background:#ff2d4a;box-shadow:0 0 26px 6px rgba(255,45,74,.6),inset 0 -6px 0 rgba(0,0,0,.2)}
+.lamp.green{background:#16d68f;box-shadow:0 0 30px 8px rgba(22,214,143,.65),inset 0 -6px 0 rgba(0,0,0,.2)}
+.cdn{font-size:120px;font-weight:700;line-height:1}
+.cdn.gogo{color:var(--good)}
+.checker{height:26px;background:repeating-conic-gradient(#1b1f3b 0 25%,#fff 0 50%) 0 0/26px 26px;border:3px solid var(--edge);border-radius:8px;margin:4px 0 14px;animation:checker 1s linear infinite}
+@keyframes checker{to{background-position:52px 0}}
+.flag{font-size:110px;text-align:center;margin-top:6px;transform-origin:20% 90%;animation:wave 1s ease-in-out infinite alternate}
+@keyframes wave{from{transform:rotate(-14deg)}to{transform:rotate(10deg)}}
+.flag.drop{animation:flagin .7s cubic-bezier(.2,1.6,.4,1) both,wave 1s ease-in-out .7s infinite alternate}
+@keyframes flagin{0%{transform:scale(0) rotate(-40deg)}100%{transform:scale(1) rotate(-14deg)}}
+.bigtime{text-align:center;font-size:64px;font-weight:700;line-height:1;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.place{text-align:center;font-weight:700;font-size:22px;margin:0 0 14px}
+.place.gold{color:var(--bad)}
+.recsec{margin-bottom:14px}
+@media (prefers-reduced-motion:reduce){.checker,.flag,.flag.drop{animation:none}}
 </style>
 </head>
 <body>
@@ -233,10 +270,10 @@ const L={
 const DEF={tables:[7,8],mode:'easy',tEasy:4,tHard:8,baby:false,base:10,insane:false};
 function load(){
   try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);
-    if(d&&Array.isArray(d.players)&&d.players.length===2){d.cfg=Object.assign({},DEF,d.cfg||{});if(!d.v2){d.v2=1;d.cfg.tables=[7,8];if(!d.players[0].name)d.players[0].name='Eric';if(!d.players[1].name)d.players[1].name='Emma';}d.players.forEach(p=>{p.facts=p.facts||{};p.best=p.best||0;});return d;}}}catch(e){}
-  return {v2:1,lang:'en',cur:0,muted:false,cfg:Object.assign({},DEF),players:[{name:'Eric',facts:{},best:0},{name:'Emma',facts:{},best:0}]};
+    if(d&&Array.isArray(d.players)&&d.players.length===2){d.cfg=Object.assign({},DEF,d.cfg||{});if(!d.v2){d.v2=1;d.cfg.tables=[7,8];}d.players.forEach(p=>{p.facts=p.facts||{};p.best=p.best||0;});return d;}}}catch(e){}
+  return {v2:1,lang:'en',cur:0,muted:false,cfg:Object.assign({},DEF),players:[{name:'',facts:{},best:0},{name:'',facts:{},best:0}],races:{}};
 }
-let S=load();
+let S=load();if(!S.races||typeof S.races!=='object')S.races={};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 
 /* ================= SOUND (synthesized, no files) ================= */
@@ -408,6 +445,19 @@ function activeFacts(){const out=[];activeTables().forEach(a=>{for(let b=1;b<=12
 function st(id){const f=P().facts;if(!f[id])f[id]={s:0,w:0,n:0,m:false};return f[id];}
 function levels(list){let y=0,o=0,m=0;list.forEach(f=>{const s=st(f.id);if(s.m)m++;else if(s.s>=2)o++;else if(s.s===1)y++;});return{y,o,m,n:list.length};}
 const isHard=()=>C().mode==='hard'&&!C().baby;
+const isRace=()=>!C().baby&&(C().mode==='race'||C().mode==='racepro');
+const isPro=()=>!C().baby&&C().mode==='racepro';
+function raceFacts(pro){const tabs=pro?Array.from({length:12},(_,i)=>i+1):activeTables(),seen=new Set(),out=[];
+  tabs.forEach(a=>{for(let b=1;b<=12;b++){const x=Math.min(a,b),y=Math.max(a,b),id=x+'x'+y;if(!seen.has(id)){seen.add(id);out.push({id,a:x,b:y});}}});return out;}
+function raceKey(pro){return (pro?'PRO':'T'+activeTables().join(','))+(C().base!==10?'|b'+C().base:'');}
+function raceLabel(k){const [m,b]=k.split('|');const base=b?' · ☠️ '+t('b'+b.slice(1)):'';
+  return m==='PRO'?t('racePro')+' · '+t('proTables')+base:t('raceSub')+' · ×'+m.slice(1).split(',').map(Number).map(fmt).join(', ')+base;}
+function fmtTime(ms){const s=ms/1000;if(s<60)return s.toFixed(1)+' s';const m=Math.floor(s/60),r=s-m*60;return m+':'+(r<10?'0':'')+r.toFixed(1);}
+const medal=i=>['🥇','🥈','🥉'][i]||(i+1)+'.';
+function fmtDate(d){const x=new Date(d);return x.toLocaleDateString(S.lang==='pt'?'pt-BR':'en-GB',{day:'2-digit',month:'short'});}
+function boardRows(list,hi){if(!list||!list.length)return `<div class="empty">${t('noRecords')}</div>`;
+  return `<div class="rows">${list.map((r,i)=>`<span>${medal(i)}</span><span class="${i===hi?'me':''}">${esc(r.n)}</span><span class="t${i===hi?' me':''}">${fmtTime(r.ms)}</span><span class="d">${fmtDate(r.d)} · ${r.m} ${t('misses')}</span>`).join('')}</div>`;}
+const FAM=['Felipe','Alexandra','Eric','Emma'];let plTap={i:-1,n:0,t:0};
 const tablesLabel=()=>C().tables.length?[...C().tables].sort((a,b)=>a-b).map(fmt).join(', '):'—';
 
 /* ================= devious distractors ================= */
@@ -442,7 +492,7 @@ let screen='home',resetArmed=false,secretTaps=0,secretT=0;
 const sndBtn=()=>`<button class="chunk sm" data-act="snd" aria-label="${t('sound')}">${S.muted?'🔇':'🔊'}</button>`;
 
 function home(){
-  screen='home';cancelAnimationFrame(raf);clearTimeout(pending);cur=null;document.body.classList.remove('fire');
+  screen='home';cancelAnimationFrame(raf);clearTimeout(pending);stopRaceTimers();cur=null;document.body.classList.remove('fire');
   document.documentElement.lang=S.lang==='pt'?'pt-BR':'en';
   const facts=activeFacts(), lv=levels(facts), any=facts.some(f=>st(f.id).n>0);
     let cells='';
@@ -457,27 +507,41 @@ function home(){
   root.innerHTML=`
   <div class="top">${sndBtn()}<div class="r"><button class="chunk sm" data-act="lang">${S.lang==='pt'?'EN':'PT'}</button><button class="chunk sm" data-act="settings" aria-label="${t('settings')}">⚙️</button></div></div>
   <h1>${t('title1')}<br>${t('title2')} <span class="x">×</span> <span class="pro">PRO</span></h1>
-  <p class="sub">${C().baby?'👶':''} ${isHard()?t('hard'):t('easy')} · ${fmt(isHard()?C().tHard:C().tEasy)} ${t('sec')}${C().base!==10?' · ☠️ '+t('b'+C().base):''}</p>
+  <p class="sub">${C().baby?'👶':''} ${isPro()?t('raceProSub'):isRace()?t('raceSub'):isHard()?t('hard'):t('easy')} · ${fmt(isHard()?C().tHard:C().tEasy)} ${t('sec')}${C().base!==10?' · ☠️ '+t('b'+C().base):''}</p>
   <div class="players">${[0,1].map(i=>`<button class="chunk pl${S.cur===i?' on':''}" data-act="pl" data-i="${i}">${esc(pname(i))}</button>`).join('')}</div>
   <input class="name" id="name" maxlength="18" placeholder="${t('namePh')}" value="${esc(P().name)}" autocomplete="off">
   ${C().baby?`<div class="chunk babybadge">${t('babyOn')}</div>`:`
-  <div class="seg">
-    <button class="chunk${!isHard()?' on':''}" data-act="mode" data-m="easy">${t('easy')}</button>
-    <button class="chunk${isHard()?' on':''}" data-act="mode" data-m="hard">${t('hard')}</button>
+  <div class="seg four">
+    <button class="chunk${C().mode==='easy'?' on':''}" data-act="mode" data-m="easy">${t('easy')}</button>
+    <button class="chunk${C().mode==='hard'?' on':''}" data-act="mode" data-m="hard">${t('hard')}</button>
+    <button class="chunk${C().mode==='race'?' on':''}" data-act="mode" data-m="race">${t('race')}</button>
+    <button class="chunk${C().mode==='racepro'?' on':''}" data-act="mode" data-m="racepro">${t('racePro')} 🏁</button>
   </div>
-  <button class="chunk pick" data-act="select"><span>${t('tables')}</span><b>${tablesLabel()} ›</b></button>`}
-  <div class="chunk board">
+  ${isPro()?`<div class="chunk racenote"><span>${t('tables')}</span><b>${t('proTables')} · ${fmt(78)} ${t('facts')}</b></div>`:`<button class="chunk pick" data-act="select"><span>${t('tables')}</span><b>${tablesLabel()} ›</b></button>`}`}
+  ${isRace()?raceHome():`<div class="chunk board">
     <div class="lab" style="display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px"><span>${t('lv3')}</span><b>${fmt(lv.m)}/${fmt(lv.n)}</b></div>
     ${barHTML(lv)}
     <div class="leg"><span style="--c:var(--yel)">${t('lv1')} · ${fmt(lv.y)}</span><span style="--c:var(--org)">${t('lv2')} · ${fmt(lv.o)}</span><span style="--c:var(--good)">⭐ ${fmt(lv.m)}</span></div>
     <div class="grid">${cells||`<div style="grid-column:1/-1;text-align:center;color:var(--muted)">—</div>`}</div>
-  </div>
-  <button class="chunk go" data-act="go" ${lv.n?'':'disabled'}>${allM?t('review'):(any?t('cont'):t('start'))}</button>
+  </div>`}
+  ${isRace()?`<button class="chunk go race" data-act="go" ${isPro()||lv.n?'':'disabled'}>${t('raceGo')}</button>`:`<button class="chunk go" data-act="go" ${lv.n?'':'disabled'}>${allM?t('review'):(any?t('cont'):t('start'))}</button>`}
   <button class="ghost${resetArmed?' warn':''}" data-act="reset">${resetArmed?t('resetSure'):t('reset')}</button>`;
   const inp=document.getElementById('name');
   inp.addEventListener('input',()=>{P().name=inp.value;save();const btn=root.querySelector(`.pl[data-i="${S.cur}"]`);if(btn)btn.textContent=pname(S.cur);});
 }
 
+function raceHome(){const k=raceKey(isPro()),list=(S.races[k]||[]).slice(0,3);
+  return `<div class="chunk mini"><h3><span>${t('bestTimes')}</span><small>${esc(raceLabel(k))}</small></h3>${boardRows(list,-1)}
+  <button class="ghost" data-act="records" style="display:block;margin:6px auto 0">${t('seeAll')}</button></div>`;}
+function recordsScreen(){
+  screen='records';const cur=raceKey(isPro()),keys=Object.keys(S.races).filter(k=>S.races[k]&&S.races[k].length);
+  if(!keys.includes(cur))keys.unshift(cur);
+  keys.sort((a,b)=>(b===cur)-(a===cur)||(b.startsWith('PRO'))-(a.startsWith('PRO'))||a.localeCompare(b));
+  root.innerHTML=`
+  <div class="top"><button class="chunk sm" data-act="home">${t('back')}</button>${sndBtn()}</div>
+  <h2>${t('bestTimes')}</h2>
+  ${keys.map(k=>`<div class="chunk mini recsec"><h3><span>${esc(raceLabel(k))}</span></h3>${boardRows(S.races[k],-1)}</div>`).join('')}`;
+}
 function selectScreen(){
   screen='select';
   const on=new Set(C().tables);
@@ -521,6 +585,88 @@ function settings(){
 
 /* ================= play ================= */
 let sess=null,cur=null,raf=0,pending=0,E={};
+let clockIv=0,cdT=[];
+function stopRaceTimers(){clearInterval(clockIv);clockIv=0;cdT.forEach(clearTimeout);cdT=[];document.querySelectorAll('.cd').forEach(x=>x.remove());}
+function startRace(){
+  resetArmed=false;screen='play';stopRaceTimers();cancelAnimationFrame(raf);clearTimeout(pending);cur=null;
+  const pro=isPro(),facts=raceFacts(pro);
+  sess={race:true,pro,key:raceKey(pro),facts,left:new Set(facts.map(f=>f.id)),qn:0,last:null,asked:0,right:0,misses:0,combo:0,best:0,missed:{},
+        lim:1000*C().tEasy,hard:false,baby:false,shrink:false,t0:0};
+  root.innerHTML=`
+  <div class="hud">
+    <button class="chunk sm" data-act="home">${t('quit')}</button>
+    <div class="lvl"><i class="rf" id="RB"></i></div>
+    <div class="count" id="count"></div>
+    ${sndBtn()}
+  </div>
+  <div class="clock off" id="clock">0.0 s</div>
+  <div class="q" id="q" aria-live="polite"></div>
+  <div class="tlab" id="tlab"></div>
+  <div class="timer" id="timer"><i id="bar"></i></div>
+  <div class="opts" id="opts"></div>
+  <div id="fb" hidden></div>`;
+  ['q','bar','timer','tlab','fb','opts','count','clock','RB'].forEach(id=>E[id]=document.getElementById(id));
+  document.body.classList.remove('fire');
+  raceHud();
+  // start lights: three reds, then green
+  const cd=document.createElement('div');cd.className='cd';
+  cd.innerHTML=`<div class="lamps"><i class="lamp"></i><i class="lamp"></i><i class="lamp"></i></div><div class="cdn" id="cdn">3</div>`;
+  document.body.appendChild(cd);
+  const lamps=cd.querySelectorAll('.lamp'),num=cd.querySelector('#cdn');
+  const step=(i)=>{lamps.forEach((l,j)=>l.classList.toggle('red',j<=i));num.textContent=String(3-i);retrigger(num,'pop');tone(523,.16,{type:'square',vol:.07});buzz(20);};
+  step(0);
+  cdT.push(setTimeout(()=>step(1),800),setTimeout(()=>step(2),1600),setTimeout(()=>{
+    lamps.forEach(l=>{l.classList.remove('red');l.classList.add('green');});
+    num.textContent=t('go');num.classList.add('gogo');retrigger(num,'pop');tone(1046,.38,{type:'square',vol:.09});buzz(60);
+    sess.t0=performance.now();E.clock.classList.remove('off');
+    clockIv=setInterval(()=>{if(sess&&sess.race&&sess.t0)E.clock.textContent=fmtTime(performance.now()-sess.t0);},50);
+    ask();
+  },2400),setTimeout(()=>cd.remove(),2750));
+}
+function raceHud(){const n=sess.facts.length,d=n-sess.left.size;E.RB.style.width=(n?d/n*100:0)+'%';E.count.textContent=fmt(d)+'/'+fmt(n);}
+function racePick(){
+  sess.qn++;if(!sess.left.size)return null;
+  let ids=[...sess.left];if(ids.length>1)ids=ids.filter(i=>i!==sess.last);
+  return rnd(ids);
+}
+function raceAnswer(v,btn){
+  cur.locked=true;cancelAnimationFrame(raf);E.timer.classList.remove('hurry');
+  const ok=v===cur.c;sess.asked++;
+  if(ok){
+    sess.right++;sess.combo++;sess.best=Math.max(sess.best,sess.combo);sess.left.delete(cur.f.id);
+    if(btn){btn.classList.add('raceright');const [x,y]=center(btn);burst(x,y,8,{min:120,max:260,life:.5});}
+    SFX.right(Math.min(sess.combo,12));buzz(10);
+  }else{
+    sess.combo=0;sess.misses++;sess.missed[cur.f.id]=(sess.missed[cur.f.id]||0)+1;
+    if(btn)btn.classList.add('racewrong');else retrigger(E.timer,'hurry');
+    SFX.wrong();buzz(70);vignette();
+  }
+  raceHud();
+  if(!sess.left.size){const ms=performance.now()-sess.t0;clearInterval(clockIv);E.clock.textContent=fmtTime(ms);pending=setTimeout(()=>raceFinish(ms),220);return;}
+  pending=setTimeout(ask,ok?110:260);
+}
+function raceFinish(ms){
+  screen='done';cancelAnimationFrame(raf);clearTimeout(pending);stopRaceTimers();
+  const name=P().name.trim()||pname(S.cur),entry={n:name,ms:Math.round(ms),d:Date.now(),m:sess.misses};
+  const list=(S.races[sess.key]||[]).concat([entry]).sort((a,b)=>a.ms-b.ms||a.d-b.d).slice(0,5);
+  S.races[sess.key]=list;save();
+  const rank=list.indexOf(entry);
+  root.innerHTML=`
+  <div class="checker"></div>
+  <div class="flag drop" aria-hidden="true">🏁</div>
+  <h1 style="text-align:center;font-size:34px;margin:4px 0 2px">${t('finished')}</h1>
+  <div class="bigtime">${fmtTime(entry.ms)}</div>
+  <p class="place${rank===0?' gold':''}">${rank===0?t('newRecord'):rank>0?ord(rank+1):t('offBoard')} · ${fmt(sess.misses)} ${t('misses')}</p>
+  <div class="chunk mini"><h3><span>${t('bestTimes')}</span><small>${esc(raceLabel(sess.key))}</small></h3>${boardRows(list,rank)}</div>
+  <div class="checker" style="animation-direction:reverse"></div>
+  <div class="stack">
+    <button class="chunk go race" data-act="go">${t('again')}</button>
+    <button class="chunk alt" data-act="records">${t('records')}</button>
+    <button class="chunk alt" data-act="home">${t('home')}</button>
+  </div>`;
+  SFX.win();confettiRain(rank===0?3.4:2.2);
+  if(rank===0)setTimeout(()=>SFX.star(),700);
+}
 function startSession(mode){
   resetArmed=false;screen='play';
   const hard=isHard(), baby=C().baby;
@@ -587,11 +733,11 @@ function pickNext(){
   return wpick(pool,x=>1+(st(x.id).m?0:3)+Math.min(st(x.id).w,4)*0.7).id;
 }
 function ask(){
-  const id=pickNext();
+  const id=sess.race?racePick():pickNext();
   if(id===null){finish();return;}
   sess.last=id;
   const f=sess.facts.find(x=>x.id===id), c=f.a*f.b;
-  const flip=f.b!==f.a&&Math.random()<0.25;
+  const flip=f.b!==f.a&&Math.random()<(sess.race?0.5:0.25);
   const x=fmt(flip?f.b:f.a), y=fmt(flip?f.a:f.b);
   cur={f,c,txt:`${x} × ${y}`,locked:false,typed:''};
   E.q.innerHTML=`${x}<span class="op">×</span>${y}`;
@@ -604,6 +750,7 @@ function ask(){
     E.opts.innerHTML=opts.map(v=>`<button class="chunk opt" data-v="${v}">${fmt(v)}</button>`).join('');
     E.opts.querySelectorAll('.opt').forEach(b=>fit(b,sess.baby?160:128,b.textContent.length));
   }
+  if(sess.race&&E.q)E.q.classList.remove('pop');
   startTimer();
 }
 /* insane streak messages: a shuffled bag per system, so nothing repeats until the whole set has been seen */
@@ -672,6 +819,7 @@ function startTimer(){
 }
 function answer(v,btn){
   if(!cur||cur.locked)return;
+  if(sess.race){raceAnswer(v,btn);return;}
   cur.locked=true;cancelAnimationFrame(raf);E.timer.classList.remove('hurry');
   const s=st(cur.f.id), ok=v===cur.c;
   s.n++;sess.asked++;
@@ -745,8 +893,13 @@ function finish(){
   if(sess.mode==='learn'){SFX.win();confettiRain(3.2);}else{SFX.star();confettiRain(1.4);}
 }
 L.pt.home='Início';L.en.home='Home';
+Object.assign(L.pt,{race:'Corrida 🏁',racePro:'Corrida PRO',raceGo:'🏁 Correr!',go:'VAI!',records:'Recordes',bestTimes:'🏁 Melhores tempos',noRecords:'Nenhum tempo ainda. Seja o primeiro!',
+  newRecord:'🏆 Novo recorde!',placeN:'º lugar no placar',offBoard:'Fora do top 5 desta vez',misses:'erros',finished:'Chegada!',again:'Correr de novo',proTables:'×1 a ×12',facts:'contas',seeAll:'Ver todos ›',raceSub:'Corrida',raceProSub:'Corrida PRO'});
+Object.assign(L.en,{race:'Race 🏁',racePro:'Race PRO',raceGo:'🏁 Race!',go:'GO!',records:'Records',bestTimes:'🏁 Best times',noRecords:'No times yet. Be the first!',
+  newRecord:'🏆 New record!',placeN:' place on the board',offBoard:'Outside the top 5 this time',misses:'misses',finished:'Finish!',again:'Race again',proTables:'×1 to ×12',facts:'facts',seeAll:'See all ›',raceSub:'Race',raceProSub:'Race PRO'});
+const ord=n=>S.lang==='pt'?n+'º lugar no placar':n+(['st','nd','rd'][n-1]||'th')+' place on the board';
 
-function rerender(){({home,select:selectScreen,settings}[screen]||home)();}
+function rerender(){({home,select:selectScreen,settings,records:recordsScreen}[screen]||home)();}
 
 /* ================= events ================= */
 document.addEventListener('pointerdown',unlockAudio,{capture:true});
@@ -776,7 +929,10 @@ root.addEventListener('click',e=>{
   switch(act){
     case 'snd':S.muted=!S.muted;save();document.querySelectorAll('[data-act="snd"]').forEach(x=>x.textContent=S.muted?'🔇':'🔊');if(!S.muted)SFX.right(3);break;
     case 'lang':S.lang=S.lang==='pt'?'en':'pt';save();rerender();break;
-    case 'pl':S.cur=+b.dataset.i;save();home();break;
+    case 'pl':{const i=+b.dataset.i,now=performance.now();
+      if(plTap.i===i&&now-plTap.t<550)plTap.n++;else plTap.n=1;plTap.i=i;plTap.t=now;
+      S.cur=i;if(plTap.n>=8)S.players[i].name=FAM[(plTap.n-8)%FAM.length];
+      save();home();break;}
     case 'mode':c.mode=b.dataset.m;save();home();break;
     case 'select':selectScreen();break;
     case 'settings':settings();break;
@@ -784,7 +940,8 @@ root.addEventListener('click',e=>{
     case 'tb':{const n=+b.dataset.n,i=c.tables.indexOf(n);if(i>=0)c.tables.splice(i,1);else c.tables.push(n);save();selectScreen();break;}
     case 'tall':c.tables=Array.from({length:12},(_,i)=>i+1);save();selectScreen();break;
     case 'tnone':c.tables=[];save();selectScreen();break;
-    case 'go':{const F=activeFacts();if(!F.length){selectScreen();break;}startSession(F.every(f=>st(f.id).m)?'review':'learn');break;}
+    case 'records':recordsScreen();break;
+    case 'go':{if(isRace()){if(!isPro()&&!activeFacts().length){selectScreen();break;}startRace();break;}const F=activeFacts();if(!F.length){selectScreen();break;}startSession(F.every(f=>st(f.id).m)?'review':'learn');break;}
     case 'review':startSession('review');break;
     case 'baby':c.baby=!c.baby;save();settings();break;
     case 'base':c.base=+b.dataset.b;save();settings();SFX.milestone();break;
