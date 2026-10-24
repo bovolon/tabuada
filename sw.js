@@ -1,5 +1,5 @@
 // Tabuada Relâmpago PRO — offline cache. Bump VERSION on every release so devices pick up the new files.
-const VERSION = 'tabuada-v2';
+const VERSION = 'tabuada-v3';
 const FILES = [
   './',
   './index.html',
